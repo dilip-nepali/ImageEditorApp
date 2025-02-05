@@ -1,5 +1,6 @@
 # gui.py
 
+import os
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -192,14 +193,22 @@ class ImageEditorGUI:
             self.cropped_canvas.image = self.tk_resized_image  # Prevent garbage collection
 
     def save_image(self):
-        """ Save the modified image to the local device in the 'assets' directory. """
+        """ Save the modified image to the local device in the 'output' directory. """
         if self.processor.cropped_image is not None:
-            # Set the initial directory to the 'assets' folder
-            initial_dir = "assets"
+            # Set the initial directory to the 'output' folder
+            initial_dir = "output"
             
+            # Create the 'output' directory if it doesn't exist
+            if not os.path.exists(initial_dir):
+                os.makedirs(initial_dir)
+
+            # Define a default filename (you can customize this)
+            default_filename = "cropped_image.png"  # or any other default name you prefer
+
             # Ask the user for a filename to save
             file_path = filedialog.asksaveasfilename(defaultextension=".png", 
                                                     initialdir=initial_dir,
+                                                    initialfile=default_filename,
                                                     filetypes=[("PNG Files", "*.png"), ("JPEG Files", "*.jpg")])
             if file_path:
                 try:
@@ -214,6 +223,7 @@ class ImageEditorGUI:
                     print(f"Error: {e}")  # Print the exception to the terminal
         else:
             messagebox.showwarning("Warning", "No cropped image to save.")
+
 
 
     def run(self):
